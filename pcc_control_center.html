@@ -1,0 +1,37 @@
+<!doctype html><html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PCC — Premier Class Cup</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f5f7fb;color:#172033;font-family:Arial,sans-serif}header{background:#fff;border-bottom:1px solid #e3e7ef;padding:18px 5%;position:sticky;top:0;z-index:5}.logo{font-size:25px;font-weight:900}.logo b{color:#2563eb}.sub,.muted,.small{color:#718096;font-size:13px}.wrap{max-width:1050px;margin:auto;padding:24px 5%}.card{background:#fff;border:1px solid #e3e7ef;border-radius:18px;padding:20px;margin-bottom:18px;box-shadow:0 5px 20px #1720330a}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}button{border:1px solid #d9dfeb;background:#fff;border-radius:10px;padding:9px 12px;cursor:pointer}button:hover{background:#eef4ff}.active{background:#2563eb;color:white;border-color:#2563eb}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}.player{padding:15px;border:1px solid #e2e7ef;border-top:4px solid;border-radius:14px}.points{font-size:30px;font-weight:900;margin:8px 0}.actions{display:flex;gap:5px;flex-wrap:wrap}table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:11px;border-bottom:1px solid #edf0f5}.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:7px}.q{border-left:4px solid #2563eb;padding:5px 0 5px 14px;margin:18px 0}.ans{display:none;background:#eef5ff;border-radius:9px;padding:10px;margin-top:8px}.show{display:block}.badge{font-size:12px;background:#eef2f7;border-radius:20px;padding:4px 8px}.danger{color:#b42318}@media(max-width:600px){.wrap{padding:16px 4%}.card{padding:16px}}
+</style></head><body>
+<header><div class="logo"><b>PCC</b> | PREMIER CLASS CUP</div><div class="sub">Control Center • Moderátor</div></header>
+<main class="wrap">
+<div class="card"><h1>PCC Control Center 🏆</h1><div class="muted">Body, pořadí a připravené úkoly pro CUP #1–#4.</div><div id="tabs" class="tabs"></div></div>
+<div class="card"><h2>Celkové pořadí</h2><table><thead><tr><th>#</th><th>Hráč</th><th>Body</th></tr></thead><tbody id="stand"></tbody></table></div>
+<div class="card"><h2>Zapisování bodů</h2><div class="muted">Klikni na +1 až +5. Body se ukládají v tomto prohlížeči.</div><div id="players" class="grid" style="margin-top:15px"></div><button class="danger" onclick="resetScores()">Vynulovat body</button></div>
+<div class="card"><h2 id="ct">CUP #1</h2><div id="qs"></div></div>
+<div class="card"><h2>Remíza ⚔️</h2><p>Pokud budou mít hráči na konci stejný počet bodů, rozhodne jeden superúkol.</p></div>
+</main>
+<script>
+const playerData=[["Vojta","#2563eb"],["Patrik","#16a34a"],["Richard Š.","#f97316"],["Max","#7c3aed"]];
+const cups=[
+["CUP #1",[
+["Matematika","Kolik je 25 % z 200?","50","snadné"],["Čeština","Urči slovní druh slova „rychle“ ve větě: Běž rychle domů.","příslovce","snadné"],["Chemie","Jaký je vzorec oxidu uhličitého?","CO₂","snadné"],["Dějepis","Ve kterém století proběhla Francouzská revoluce?","18. století","střední"],["Třída","Který hráč má aktuálně nejvíce bodů?","podle tabulky","speciální"],["Logika","Máš 3 krabičky. V každé jsou 2 kuličky. Kolik jich je dohromady?","6","snadné"],["Matematika","Cena 800 Kč se zlevní o 25 %. Kolik stojí po slevě?","600 Kč","střední"],["Rychlost","Moderátor řekne písmeno. Kdo první řekne české slovo na toto písmeno?","určí moderátor","speciální"],["Biologie","Která část rostliny přijímá vodu a minerální látky z půdy?","kořeny","střední"],["Finále","Každý hráč dostane 30 sekund na krátkou logickou hádanku.","určí moderátor","speciální"]]],
+["CUP #2",[
+["Matematika","Kolik je 3/4 z 80?","60","střední"],["Angličtina","Co znamená slovo „school“?","škola","snadné"],["Fyzika","Jaká je jednotka elektrického proudu?","ampér (A)","snadné"],["Dějepis","Jak se nazývá české kulturní hnutí 19. století podporující jazyk a kulturu?","Národní obrození","těžké"],["Třída","Moderátor položí otázku o vaší třídě.","určí moderátor","speciální"],["Přesnost","Hoď papírovou kuličku do cíle. Každý má 3 pokusy.","určí moderátor","speciální"],["Čeština","Doplň: „Děvčata si ____ na hřišti.“","hrála","střední"],["Matematika","Kolik je 120 % z 500?","600","střední"],["Logika","Co má klíč, ale neodemkne žádné dveře?","klavír","těžké"],["Bleskovka","5 krátkých otázek za sebou.","určí moderátor","speciální"]]],
+["CUP #3",[
+["Matematika","Vyřeš: x + 7 = 19.","x = 12","snadné"],["Chemie","Jaký je vzorec vody?","H₂O","snadné"],["Čeština","Urči rod podstatného jména „město“.","střední","snadné"],["Geografie","Jaké je hlavní město Slovenska?","Bratislava","snadné"],["Třída","Moderátor položí otázku týkající se společné třídní zkušenosti.","určí moderátor","speciální"],["Logika","Máš 10 bonbonů a rozdáš polovinu. Kolik zůstane?","5","snadné"],["Fyzika","Jak se nazývá síla, která přitahuje tělesa k Zemi?","gravitační síla","střední"],["Rychlost","Kdo nejrychleji správně seřadí 5 předmětů podle velikosti?","určí moderátor","speciální"],["Dějepis","Kdo byl prvním prezidentem Československa?","Tomáš Garrigue Masaryk","střední"],["Supermix","Jedna otázka z každého ze tří předchozích témat.","určí moderátor","těžké"]]],
+["CUP #4",[
+["Matematika","Kolik je 15 % z 600?","90","střední"],["Čeština","Jaký slovní druh je slovo „krásný“?","přídavné jméno","snadné"],["Přírodopis","Který orgán pumpuje krev do těla?","srdce","snadné"],["Fyzika","Jaký vztah vyjadřuje Ohmův zákon?","U = R · I","těžké"],["Třída","Moderátor položí nejtěžší otázku týkající se vaší třídy.","určí moderátor","speciální"],["Přesnost","Každý má 3 pokusy trefit určený cíl.","určí moderátor","speciální"],["Dějepis","V kterém roce vzniklo samostatné Československo?","1918","střední"],["Logika","Co pokračuje v řadě: 2, 4, 8, 16, ...?","32","snadné"],["Bleskovka","5 otázek, odpověď musí přijít do 5 sekund.","určí moderátor","speciální"],["VELKÉ FINÁLE","Poslední úkol sezóny. Moderátor připraví finálovou výzvu.","určí moderátor","těžké"]]]
+];
+let cup=0, scores=JSON.parse(localStorage.getItem("pccScores")||"null")||Object.fromEntries(playerData.map(p=>[p[0],0]));
+function render(){
+tabs.innerHTML=cups.map((c,i)=>`<button class="${i==cup?"active":""}" onclick="cup=${i};render()">${c[0]}</button>`).join("");
+let s=[...playerData].sort((a,b)=>scores[b[0]]-scores[a[0]]);
+stand.innerHTML=s.map((p,i)=>`<tr><td><b>${i+1}.</b></td><td><i class="dot" style="background:${p[1]}"></i>${p[0]}</td><td><b>${scores[p[0]]}</b></td></tr>`).join("");
+playersDiv=document.getElementById("players");playersDiv.innerHTML=playerData.map(p=>`<div class="player" style="border-top-color:${p[1]}"><b>${p[0]}</b><div class="points">${scores[p[0]]} <span class="small">bodů</span></div><div class="actions">${[1,2,3,4,5].map(n=>`<button onclick="add('${p[0]}',${n})">+${n}</button>`).join("")}</div></div>`).join("");
+ct.textContent=cups[cup][0];
+qs.innerHTML=cups[cup][1].map((q,i)=>`<div class="q"><b>${i+1}. ${q[0]}</b> <span class="badge">${q[3]}</span><p>${q[1]}</p><button onclick="document.getElementById('a'+i).classList.toggle('show')">Zobrazit odpověď</button><div class="ans" id="a${i}"><b>Odpověď:</b> ${q[2]}</div></div>`).join("");
+}
+function add(n,x){scores[n]+=x;localStorage.setItem("pccScores",JSON.stringify(scores));render()}
+function resetScores(){if(confirm("Vynulovat všechny body?")){scores=Object.fromEntries(playerData.map(p=>[p[0],0]));localStorage.setItem("pccScores",JSON.stringify(scores));render()}}
+render();
+</script></body></html>
